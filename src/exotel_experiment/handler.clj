@@ -23,7 +23,7 @@
 
 (defroutes app-routes
   (GET "/passthru" [From digits]
-       (passthru digits))
+       (passthru From digits))
 
   (GET "/connect" [From]
        (connect From))

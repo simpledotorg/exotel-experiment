@@ -1,7 +1,6 @@
 (ns exotel-experiment.handler
-  (:require [clojure.pprint :refer [pprint]]
-            [clojure.string :as string]
-            [compojure.core :refer :all]
+  (:require [clojure.string :as string]
+            [compojure.core :refer [defroutes GET]]
             [compojure.route :as route]
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 

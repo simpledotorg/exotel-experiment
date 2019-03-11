@@ -5,26 +5,28 @@
             [compojure.route :as route]
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 
-(declare callee-number)
+(defonce sessions
+  (atom {}))
 
-(defn- passthru [digits]
-  (def callee-number digits)
-  (println "Calling number:" callee-number)
+(defn- passthru [From digits]
+  (swap! sessions
+         assoc From digits)
   {:status 200
    :headers {"Content-Type" "text/plain"}})
 
-(defn- connect [request]
-  (pprint request)
-  {:status 200
-   :headers {"Content-Type" "text/plain"}
-   :body (string/replace callee-number #"%22" "")})
+(defn- connect [From]
+  (let [digits (-> (get @sessions From)
+                   (string/replace #"%22" ""))]
+    {:status 200
+     :headers {"Content-Type" "text/plain"}
+     :body digits}))
 
 (defroutes app-routes
-  (GET "/passthru" [digits]
+  (GET "/passthru" [From digits]
        (passthru digits))
 
-  (GET "/connect" request
-       (connect request))
+  (GET "/connect" [From]
+       (connect From))
 
   (route/not-found "Not Found"))
 
